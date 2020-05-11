@@ -142,6 +142,8 @@ public class CountlyConfig {
 
     String locationIpAddress = null;
 
+    String customLocale;
+
     public CountlyConfig() {
     }
 
@@ -457,6 +459,11 @@ public class CountlyConfig {
 
     public synchronized CountlyConfig setDisableLocation() {
         disableLocation = true;
+        return this;
+    }
+
+    public synchronized CountlyConfig setCustomLocaleString(String locale) {
+        customLocale = locale;
         return this;
     }
 

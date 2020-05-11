@@ -230,6 +230,9 @@ public class Countly {
             previousTimer.cancel(false);
         }
 
+        if(timerDelay < 0)
+            return;
+
         //minimum delay of 1 second
         //maximum delay if 10 minutes
         if(timerDelay < 1){
@@ -1576,13 +1579,14 @@ public class Countly {
             Log.d(Countly.TAG, "Setting event queue size: [" + size + "]");
         }
 
+        /*
         if(size < 1){
             if (isLoggingEnabled()) {
                 Log.d(Countly.TAG, "[setEventQueueSizeToSend] queue size can't be less than zero");
             }
             size = 1;
         }
-
+        */
         EVENT_QUEUE_SIZE_THRESHOLD = size;
         return this;
     }
@@ -1627,7 +1631,7 @@ public class Countly {
      * Submits all of the locally queued events to the server if there are more than 10 of them.
      */
     protected void sendEventsIfNeeded() {
-        if (eventQueue_.size() >= EVENT_QUEUE_SIZE_THRESHOLD) {
+        if (EVENT_QUEUE_SIZE_THRESHOLD > 0 && eventQueue_.size() >= EVENT_QUEUE_SIZE_THRESHOLD) {
             connectionQueue_.recordEvents(eventQueue_.events());
         }
     }

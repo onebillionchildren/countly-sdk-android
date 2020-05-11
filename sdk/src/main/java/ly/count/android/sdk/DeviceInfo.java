@@ -173,6 +173,10 @@ class DeviceInfo {
      * Returns the current locale (ex. "en_US").
      */
     static String getLocale() {
+        String localeOverride = Countly.sharedInstance().config_.customLocale;
+        if(localeOverride != null)
+            return localeOverride;
+
         final Locale locale = Locale.getDefault();
         return locale.getLanguage() + "_" + locale.getCountry();
     }

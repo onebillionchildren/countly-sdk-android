@@ -56,6 +56,17 @@ public class ModuleSessions extends ModuleBase {
         _cly.sendEventsIfExist();
     }
 
+    void endSessionInternal(int duration, String deviceIdOverride) {
+        if (_cly.isLoggingEnabled()) {
+            Log.d(Countly.TAG, "[ModuleSessions] 'endSessionInternal'");
+        }
+
+        _cly.connectionQueue_.endSession(duration, deviceIdOverride);
+        prevSessionDurationStartTime_ = 0;
+
+        _cly.sendEventsIfExist();
+    }
+
     /**
      * Calculates the unsent session duration in seconds, rounded to the nearest int.
      */
@@ -135,6 +146,25 @@ public class ModuleSessions extends ModuleBase {
             }
 
             endSessionInternal(null);
+        }
+
+        public synchronized void endSession(int duration) {
+            if (!_cly.isInitialized()) {
+                throw new IllegalStateException("Countly.sharedInstance().init must be called before endSession");
+            }
+
+            if (_cly.isLoggingEnabled()) {
+                Log.d(Countly.TAG, "[Sessions] Calling 'endSession', manual session control enabled:[" + manualSessionControlEnabled + "]");
+            }
+
+            if (!manualSessionControlEnabled) {
+                if (_cly.isLoggingEnabled()) {
+                    Log.w(Countly.TAG, "[Sessions] 'endSession' will be ignored since manual session control is not enabled");
+                    return;
+                }
+            }
+
+            endSessionInternal(duration,null);
         }
     }
 }
