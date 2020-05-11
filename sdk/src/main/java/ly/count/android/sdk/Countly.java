@@ -2631,8 +2631,8 @@ public class Countly {
         if (!isInitialized()) {
             throw new IllegalStateException("Countly.sharedInstance().init must be called before doStoredRequests");
         }
-
-        connectionQueue_.tick();
+        sendEventsForced();
+        connectionQueue_.tick(true);
     }
 
     public Countly enableTemporaryIdMode() {

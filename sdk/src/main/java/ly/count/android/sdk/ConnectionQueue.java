@@ -664,7 +664,18 @@ public class ConnectionQueue {
      * Does nothing if there is connection queue data or if a ConnectionProcessor
      * is already running.
      */
-    void tick() {
+    public void tick() {
+        tickInternal(false);
+    }
+
+    public void tick(boolean force) {
+        tickInternal(force);
+    }
+
+    protected void tickInternal(boolean force) {
+        if(!force)
+            return;
+
         if (Countly.sharedInstance().isLoggingEnabled()) {
             Log.v(Countly.TAG, "[Connection Queue] tick, Not empty:[" + !store_.isEmptyConnections() + "], Has processor:[" + (connectionProcessorFuture_ == null) + "], Done or null:[" + (connectionProcessorFuture_ == null || connectionProcessorFuture_.isDone()) + "]");
         }
