@@ -1631,7 +1631,7 @@ public class Countly {
      * Submits all of the locally queued events to the server if there are more than 10 of them.
      */
     protected void sendEventsIfNeeded() {
-        if (EVENT_QUEUE_SIZE_THRESHOLD > 0 && eventQueue_.size() >= EVENT_QUEUE_SIZE_THRESHOLD) {
+        if (eventQueue_.size() >= EVENT_QUEUE_SIZE_THRESHOLD) {
             connectionQueue_.recordEvents(eventQueue_.events());
         }
     }
@@ -2631,7 +2631,6 @@ public class Countly {
         if (!isInitialized()) {
             throw new IllegalStateException("Countly.sharedInstance().init must be called before doStoredRequests");
         }
-        sendEventsForced();
         connectionQueue_.tick(true);
     }
 

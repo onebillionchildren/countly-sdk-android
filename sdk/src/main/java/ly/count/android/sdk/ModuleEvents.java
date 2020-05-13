@@ -96,13 +96,13 @@ class ModuleEvents extends ModuleBase{
             case ModuleRatings.STAR_RATING_EVENT_KEY:
                 if (Countly.sharedInstance().getConsent(Countly.CountlyFeatureNames.starRating)) {
                     _cly.eventQueue_.recordEvent(key, segmentationString, segmentationInt, segmentationDouble, segmentationBoolean, count, sum, dur, instant);
-                    _cly.sendEventsIfNeeded();
+                    _cly.sendEventsForced();
                 }
                 break;
             case ModuleViews.VIEW_EVENT_KEY:
                 if (Countly.sharedInstance().getConsent(Countly.CountlyFeatureNames.views)) {
                     _cly.eventQueue_.recordEvent(key, segmentationString, segmentationInt, segmentationDouble, segmentationBoolean, count, sum, dur, instant);
-                    _cly.sendEventsIfNeeded();
+                    _cly.sendEventsForced();
                 }
                 break;
             case ModuleViews.ORIENTATION_EVENT_KEY:

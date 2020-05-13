@@ -41,6 +41,16 @@ public class ModuleSessions extends ModuleBase {
         }
     }
 
+    void updateSessionInternal(int durationSeconds) {
+        if (_cly.isLoggingEnabled()) {
+            Log.d(Countly.TAG, "[ModuleSessions] 'updateSessionInternal' seconds:"+durationSeconds);
+        }
+
+        if (!_cly.disableUpdateSessionRequests_) {
+            prevSessionDurationStartTime_ = System.nanoTime();
+            _cly.connectionQueue_.updateSession(durationSeconds);
+        }
+    }
     /**
      *
      * @param deviceIdOverride used when switching deviceID to a different one and ending the previous session
@@ -53,18 +63,18 @@ public class ModuleSessions extends ModuleBase {
         _cly.connectionQueue_.endSession(roundedSecondsSinceLastSessionDurationUpdate(), deviceIdOverride);
         prevSessionDurationStartTime_ = 0;
 
-        _cly.sendEventsIfNeeded();
+        _cly.sendEventsIfExist();
     }
 
     void endSessionInternal(int duration, String deviceIdOverride) {
         if (_cly.isLoggingEnabled()) {
-            Log.d(Countly.TAG, "[ModuleSessions] 'endSessionInternal'");
+            Log.d(Countly.TAG, "[ModuleSessions] 'endSessionInternal' seconds:"+duration);
         }
 
         _cly.connectionQueue_.endSession(duration, deviceIdOverride);
         prevSessionDurationStartTime_ = 0;
 
-        _cly.sendEventsIfNeeded();
+        _cly.sendEventsIfExist();
     }
 
     /**
@@ -129,6 +139,29 @@ public class ModuleSessions extends ModuleBase {
             updateSessionInternal();
         }
 
+        public synchronized void updateSession(int durationSeconds) {
+            if (!_cly.isInitialized()) {
+                throw new IllegalStateException("Countly.sharedInstance().init must be called before updateSession");
+            }
+
+            if (_cly.isLoggingEnabled()) {
+                Log.d(Countly.TAG, "[Sessions] Calling 'updateSession', manual session control enabled:[" + manualSessionControlEnabled + "]");
+            }
+
+            if (!manualSessionControlEnabled) {
+                if (_cly.isLoggingEnabled()) {
+                    Log.w(Countly.TAG, "[Sessions] 'updateSession' will be ignored since manual session control is not enabled");
+                    return;
+                }
+            }
+
+            if (_cly.isLoggingEnabled()) {
+                Log.d(Countly.TAG, "[Sessions] Calling 'updateSession'");
+            }
+
+            updateSessionInternal(durationSeconds);
+        }
+
         public synchronized void endSession() {
             if (!_cly.isInitialized()) {
                 throw new IllegalStateException("Countly.sharedInstance().init must be called before endSession");
@@ -148,7 +181,7 @@ public class ModuleSessions extends ModuleBase {
             endSessionInternal(null);
         }
 
-        public synchronized void endSession(int duration) {
+        public synchronized void endSession(int durationSeconds) {
             if (!_cly.isInitialized()) {
                 throw new IllegalStateException("Countly.sharedInstance().init must be called before endSession");
             }
@@ -164,7 +197,7 @@ public class ModuleSessions extends ModuleBase {
                 }
             }
 
-            endSessionInternal(duration,null);
+            endSessionInternal(durationSeconds,null);
         }
     }
 }
