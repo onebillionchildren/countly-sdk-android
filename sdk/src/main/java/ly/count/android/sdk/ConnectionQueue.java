@@ -672,16 +672,15 @@ public class ConnectionQueue {
      * is already running.
      */
     public void tick() {
-        tickInternal(!uploadDataOnlyOnStoredRequests);
+        tick(!uploadDataOnlyOnStoredRequests);
     }
 
     public void tick(boolean force) {
-        tickInternal(force);
+        if(force)
+            tickInternal();
     }
 
-    protected void tickInternal(boolean force) {
-        if(!force)
-            return;
+    protected void tickInternal() {
 
         if (Countly.sharedInstance().isLoggingEnabled()) {
             Log.v(Countly.TAG, "[Connection Queue] tick, Not empty:[" + !store_.isEmptyConnections() + "], Has processor:[" + (connectionProcessorFuture_ == null) + "], Done or null:[" + (connectionProcessorFuture_ == null || connectionProcessorFuture_.isDone()) + "]");
