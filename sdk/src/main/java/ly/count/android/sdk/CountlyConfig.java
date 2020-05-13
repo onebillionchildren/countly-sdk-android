@@ -108,6 +108,8 @@ public class CountlyConfig {
 
     protected boolean shouldIgnoreAppCrawlers = false;
 
+    protected boolean uploadDataOnlyOnStoredRequests = false;
+
     protected String[] appCrawlerNames = null;
 
     protected String[] publicKeyPinningCertificates = null;
@@ -243,6 +245,11 @@ public class CountlyConfig {
      */
     public CountlyConfig setLoggingEnabled(boolean enabled) {
         this.loggingEnabled = enabled;
+        return this;
+    }
+
+    public CountlyConfig setUploadDataOnlyOnStoredRequests(boolean enabled) {
+        this.uploadDataOnlyOnStoredRequests = enabled;
         return this;
     }
 

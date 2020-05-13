@@ -593,6 +593,7 @@ public class Countly {
             connectionQueue_.setCountlyStore(countlyStore);
             connectionQueue_.setDeviceId(deviceIdInstance);
             connectionQueue_.setRequestHeaderCustomValues(requestHeaderCustomValues);
+            connectionQueue_.setUploadDataOnStoredRequestsOnly(config.uploadDataOnlyOnStoredRequests);
             connectionQueue_.setContext(context_);
 
             eventQueue_ = new EventQueue(countlyStore);
@@ -1579,14 +1580,13 @@ public class Countly {
             Log.d(Countly.TAG, "Setting event queue size: [" + size + "]");
         }
 
-        /*
         if(size < 1){
             if (isLoggingEnabled()) {
                 Log.d(Countly.TAG, "[setEventQueueSizeToSend] queue size can't be less than zero");
             }
             size = 1;
         }
-        */
+
         EVENT_QUEUE_SIZE_THRESHOLD = size;
         return this;
     }
@@ -2631,6 +2631,7 @@ public class Countly {
         if (!isInitialized()) {
             throw new IllegalStateException("Countly.sharedInstance().init must be called before doStoredRequests");
         }
+
         connectionQueue_.tick(true);
     }
 

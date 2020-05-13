@@ -53,6 +53,7 @@ public class ConnectionQueue {
     private Future<?> connectionProcessorFuture_;
     private DeviceId deviceId_;
     private SSLContext sslContext_;
+    private boolean uploadDataOnlyOnStoredRequests;
 
     private Map<String, String> requestHeaderCustomValues;
 
@@ -110,6 +111,12 @@ public class ConnectionQueue {
     public void setRequestHeaderCustomValues(Map<String, String> headerCustomValues){
         requestHeaderCustomValues = headerCustomValues;
     }
+
+    public void setUploadDataOnStoredRequestsOnly(boolean enabled)
+    {
+        this.uploadDataOnlyOnStoredRequests = enabled;
+    }
+
 
     /**
      * Checks internal state and throws IllegalStateException if state is invalid to begin use.
@@ -665,7 +672,7 @@ public class ConnectionQueue {
      * is already running.
      */
     public void tick() {
-        tickInternal(false);
+        tickInternal(!uploadDataOnlyOnStoredRequests);
     }
 
     public void tick(boolean force) {
